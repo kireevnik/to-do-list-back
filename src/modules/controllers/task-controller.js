@@ -1,77 +1,77 @@
-const Task = require('../index');
-const { validationString } = require('../../helpers/validation');
+const Task = require('../models/task');
 
 const getAllTasks = async (req, res) => {
   try {
     const getTask = await Task.find()
     res.status(200).send({ data: getTask });
   } catch (error) {
-    res.status(400).send("Error GET");
+    res.status(400).send("Tasks fetch error");
   }
 };
 
 const createNewTask = async (req, res) => {
   try {
     const { text } = req.body;
-    if (!req.body.hasOwnProperty('text') || validationString(text)) {
+    const { validationString } = require('../../helpers/validation');
+
+    if (!req.body.hasOwnProperty('text') || !validationString(text)) {
       throw new Error("поле пустое или не тот тип");
     }
-    const textTask = new Task({ text });
-    const newTask = await textTask.save();
-    res.status(200).send(newTask);
-
+    const newTask = new Task({ text });
+    const savingNewTask = await newTask.save();
+    res.status(200).send(savingNewTask);
   } catch (error) {
-    res.status(400).send('Error POST');
+    res.status(400).send('Task sending error');
   }
 };
 
 const deleteTask = async (req, res) => {
   try {
     const { _id } = req.params;
+    const { validationString } = require('../../helpers/validation');
 
     if (!req.params.hasOwnProperty('_id')
-      || _id === ""
+      || validationString(_id)
     ) {
-      throw new Error("_id не определён")
+      throw new Error("Values is not was add")
     }
     await Task.deleteOne({ _id });
-    await res.status(200).send('Task is delete');
-
+    res.status(200).send('Task is delete');
   } catch (error) {
-    res.status(400).send('Error DELETE');
+    res.status(400).send('Task delete error');
   }
 };
 
-const changeTextTask = async (req, res) => {  //разделить на 2 isCheck, text
+const changeTextTask = async (req, res) => {
   try {
     const { text } = req.body;
     const { _id } = req.params;
+    const { validationString } = require('../../helpers/validation');
 
-    if (!req.body.hasOwnProperty('text')
-      || !req.params.hasOwnProperty('_id')
+    if (!req.params.hasOwnProperty('_id')
+      || !req.body.hasOwnProperty('text')
+      || validationString(_id)
       || validationString(text)
-      || _id === ""
     ) {
-      throw new Error(" не определёны поля")
+      throw new Error("Values is not was add")
     }
-    const changeTask = await Task.findOneAndUpdate(
+    const updateTask = await Task.findOneAndUpdate(
       { _id },
       { $set: { text } },
-      { new: true });
-
-    await res.status(200).send(changeTask);
-
+      { new: true }
+    );
+    await res.status(200).send(updateTask);
   } catch (error) {
-    res.status(400).send('Не удалось обновить текст');
+    res.status(400).send('Task change error');
   }
 };
 
 const deleteTasks = async (req, res) => {
   try {
     await Task.deleteMany();
-    res.status(200).send("All Tasks is deleted !");
+    res.status(200).send("All Tasks deleted !");
   } catch (error) {
-    res.status(400).send('Не удалось удалить все задачи');
+    res.status(400).send('Tasks delete error');
   }
 };
 
@@ -79,18 +79,23 @@ const changeCheckBoxTask = async (req, res) => {
   try {
     const { isCheck } = req.body;
     const { _id } = req.params;
-    if (!req.body.hasOwnProperty('isCheck')
-      || !req.params.hasOwnProperty('_id')
-      || _id === ''
-      || isCheck === ''
-    ) {
-      throw new Error('Не Удалось изменить положение чек бокса !');
-    }
-    const newTask = await Task.findOneAndUpdate({ _id }, { $set: { isCheck } }, { new: true });
-    await res.status(200).send(newTask);
+    const { validationString } = require('../../helpers/validation');
 
+    if (!req.params.hasOwnProperty('_id')
+      || !req.body.hasOwnProperty('isCheck')
+      || validationString(_id)
+      || validationString(isCheck)
+    ) {
+      throw new Error("Values is not was add");
+    }
+    const updateCheckBox = await Task.findOneAndUpdate(
+      { _id },
+      { $set: { isCheck } },
+      { new: true }
+    );
+    res.status(200).send(updateCheckBox);
   } catch (error) {
-    res.status(400).send('Eror PATH');
+    res.status(400).send('Task change error');
   }
 };
 

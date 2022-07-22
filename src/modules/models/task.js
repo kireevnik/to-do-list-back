@@ -1,21 +1,12 @@
-const Router = require("express");
-const router = new Router();
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-const {
-  createNewTask,
-  getAllTasks,
-  deleteTask,
-  deleteTasks,
-  changeTextTask,
-  changeCheckBoxTask
+const TaskSchema = new Schema({
+  text: String,
+  isCheck: {
+    type: Boolean,
+    default: false
+  }
+});
 
-} = require('../controllers/task-controller');
-
-router.get('/tasks', getAllTasks);
-router.post('/tasks', createNewTask);
-router.delete('/tasks/:_id', deleteTask);
-router.delete('/tasks', deleteTasks);
-router.patch('/tasks/text/:_id', changeTextTask);
-router.patch('/tasks/isCheck/:_id', changeCheckBoxTask);
-
-module.exports = router;
+module.exports = Task = mongoose.model('Tasks', TaskSchema);

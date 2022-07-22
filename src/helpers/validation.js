@@ -1,5 +1,5 @@
-const validationString = (text) => {       
-  return (typeof text !== 'string'|| text === "");
+const validationString = (string) => {       
+  return (string === 'string'|| string !== "");
 };
 
 module.exports = {
