@@ -14,7 +14,9 @@ const createNewTask = async (req, res) => {
   try {
     const { text } = req.body;
 
-    if (!req.body.hasOwnProperty('text') || !validationString(text)) {
+    if (!req.body.hasOwnProperty('text')
+      || !validationString(text)
+    ) {
       throw new Error("поле пустое или не тот тип");
     }
     const newTask = new Task({ text });
@@ -30,7 +32,7 @@ const deleteTask = async (req, res) => {
     const { _id } = req.params;
 
     if (!req.params.hasOwnProperty('_id')
-      || validationString(_id)
+      || id === ''
     ) {
       throw new Error("Values is not was add")
     }
@@ -48,8 +50,8 @@ const changeTextTask = async (req, res) => {
 
     if (!req.params.hasOwnProperty('_id')
       || !req.body.hasOwnProperty('text')
+      || !validationString(text)
       || id === ''
-      || validationString(text)
     ) {
       throw new Error("Values is not was add")
     }
@@ -82,9 +84,9 @@ const changeCheckBoxTask = async (req, res) => {
       || !req.params.hasOwnProperty('_id'))
       || typeof isCheck !== 'boolean'
       || _id === ''
-      ) {
-        throw new Error ("Values is not was add");
-      }
+    ) {
+      throw new Error("Values is not was add");
+    }
     const updateCheckBox = await Task.findOneAndUpdate(
       { _id },
       { $set: { isCheck } },
