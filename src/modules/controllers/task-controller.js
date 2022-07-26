@@ -1,11 +1,9 @@
 const Task = require('../models/task');
 const { validationString } = require('../../helpers/validation');
-const { sortTasks } = require('../../helpers/rebuilding');
 
 const getAllTasks = async (req, res) => {
   try {
-    const allTasks = await Task.find();
-    sortTasks(allTasks);
+    const allTasks = await Task.find().sort({isCheck: 1});
     res.status(200).send({ data: allTasks });
   } catch (error) {
     res.status(400).send("Task retrieval error");
@@ -19,7 +17,7 @@ const createNewTask = async (req, res) => {
     if (!req.body.hasOwnProperty('text')
       || !validationString(text)
     ) {
-      throw new Error("The value was not obtained");
+      throw new Error("Value not received");
     }
     const newTask = new Task({ text });
     const savingNewTask = await newTask.save();
@@ -38,8 +36,8 @@ const deleteTask = async (req, res) => {
     ) {
       throw new Error("Values have not been added")
     }
-    await Task.deleteOne({ _id });
-    res.status(200).send('Task deleted');
+    const data = await Task.deleteOne({ _id });
+    res.status(200).send(data);
   } catch (error) {
     res.status(400).send('Task deletion error');
   }
