@@ -1,9 +1,10 @@
 const Task = require('../models/task');
+const { validationString } = require('../../helpers/validation');
 
 const getAllTasks = async (req, res) => {
   try {
-    const getTask = await Task.find()
-    res.status(200).send({ data: getTask });
+    const allTasks = await Task.find()
+    res.status(200).send({ data: allTasks });
   } catch (error) {
     res.status(400).send("Tasks fetch error");
   }
@@ -12,7 +13,6 @@ const getAllTasks = async (req, res) => {
 const createNewTask = async (req, res) => {
   try {
     const { text } = req.body;
-    const { validationString } = require('../../helpers/validation');
 
     if (!req.body.hasOwnProperty('text') || !validationString(text)) {
       throw new Error("поле пустое или не тот тип");
@@ -28,7 +28,6 @@ const createNewTask = async (req, res) => {
 const deleteTask = async (req, res) => {
   try {
     const { _id } = req.params;
-    const { validationString } = require('../../helpers/validation');
 
     if (!req.params.hasOwnProperty('_id')
       || validationString(_id)
@@ -46,11 +45,10 @@ const changeTextTask = async (req, res) => {
   try {
     const { text } = req.body;
     const { _id } = req.params;
-    const { validationString } = require('../../helpers/validation');
 
     if (!req.params.hasOwnProperty('_id')
       || !req.body.hasOwnProperty('text')
-      || validationString(_id)
+      || id === ''
       || validationString(text)
     ) {
       throw new Error("Values is not was add")
@@ -60,7 +58,7 @@ const changeTextTask = async (req, res) => {
       { $set: { text } },
       { new: true }
     );
-    await res.status(200).send(updateTask);
+    res.status(200).send(updateTask);
   } catch (error) {
     res.status(400).send('Task change error');
   }
@@ -79,15 +77,14 @@ const changeCheckBoxTask = async (req, res) => {
   try {
     const { isCheck } = req.body;
     const { _id } = req.params;
-    const { validationString } = require('../../helpers/validation');
 
-    if (!req.params.hasOwnProperty('_id')
-      || !req.body.hasOwnProperty('isCheck')
-      || validationString(_id)
-      || validationString(isCheck)
-    ) {
-      throw new Error("Values is not was add");
-    }
+    if (!req.body.hasOwnProperty('isCheck'
+      || !req.params.hasOwnProperty('_id'))
+      || typeof isCheck !== 'boolean'
+      || _id === ''
+      ) {
+        throw new Error ("Values is not was add");
+      }
     const updateCheckBox = await Task.findOneAndUpdate(
       { _id },
       { $set: { isCheck } },
@@ -107,4 +104,3 @@ module.exports = {
   changeTextTask,
   changeCheckBoxTask
 };
-

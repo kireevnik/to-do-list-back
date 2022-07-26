@@ -8,7 +8,6 @@ const {
   deleteTasks,
   changeTextTask,
   changeCheckBoxTask
-
 } = require('../controllers/task-controller');
 
 router.get('/tasks', getAllTasks);
