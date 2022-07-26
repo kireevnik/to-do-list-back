@@ -55,12 +55,12 @@ const changeTextTask = async (req, res) => {
     ) {
       throw new Error("Values is not was add")
     }
-    const updateTask = await Task.findOneAndUpdate(
+    const task = await Task.findOneAndUpdate(
       { _id },
       { $set: { text } },
       { new: true }
     );
-    res.status(200).send(updateTask);
+    res.status(200).send(task);
   } catch (error) {
     res.status(400).send('Task change error');
   }
@@ -87,12 +87,12 @@ const changeCheckBoxTask = async (req, res) => {
     ) {
       throw new Error("Values is not was add");
     }
-    const updateCheckBox = await Task.findOneAndUpdate(
+    const task = await Task.findOneAndUpdate(
       { _id },
       { $set: { isCheck } },
       { new: true }
     );
-    res.status(200).send(updateCheckBox);
+    res.status(200).send(task);
   } catch (error) {
     res.status(400).send('Task change error');
   }

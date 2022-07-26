@@ -1,10 +1,14 @@
+require('dotenv').config();
 const cors = require('cors');
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
 const apiRotes = require('./src/modules/routers/task-routers');
-require('dotenv').config();
 const PORT = process.env.PORT || 5000;
+
+app.use(cors());
+app.use(express.json());
+app.use('/', apiRotes);
 
 const connect = () => {
   try {
@@ -18,7 +22,4 @@ const connect = () => {
   }
 };
 
-app.use(cors());
-app.use(express.json());
-app.use('/', apiRotes);
 connect();

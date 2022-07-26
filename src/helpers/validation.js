@@ -1,5 +1,5 @@
 const validationString = (string) => {       
-  return (string === 'string'|| string !== "");
+  return (typeof string === 'string'&& string !== "");
 };
 
 module.exports = {
