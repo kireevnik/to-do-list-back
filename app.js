@@ -17,7 +17,7 @@ const connect = () => {
       console.log(`Example app listening on port ${PORT} !`);
     });
   } catch {
-    console.error('Connection not created !');
+    console.error('Connection not created!');
     process.exit(1);
   }
 };

@@ -1,12 +1,14 @@
 const Task = require('../models/task');
 const { validationString } = require('../../helpers/validation');
+const { sortTasks } = require('../../helpers/rebuilding');
 
 const getAllTasks = async (req, res) => {
   try {
-    const allTasks = await Task.find()
+    const allTasks = await Task.find();
+    sortTasks(allTasks);
     res.status(200).send({ data: allTasks });
   } catch (error) {
-    res.status(400).send("Tasks fetch error");
+    res.status(400).send("Task retrieval error");
   }
 };
 
@@ -17,7 +19,7 @@ const createNewTask = async (req, res) => {
     if (!req.body.hasOwnProperty('text')
       || !validationString(text)
     ) {
-      throw new Error("Value was not added");
+      throw new Error("The value was not obtained");
     }
     const newTask = new Task({ text });
     const savingNewTask = await newTask.save();
@@ -32,14 +34,14 @@ const deleteTask = async (req, res) => {
     const { _id } = req.params;
 
     if (!req.params.hasOwnProperty('_id')
-      || id === ''
+      || _id === ''
     ) {
-      throw new Error("Values were not added")
+      throw new Error("Values have not been added")
     }
     await Task.deleteOne({ _id });
-    res.status(200).send('Task is delete');
+    res.status(200).send('Task deleted');
   } catch (error) {
-    res.status(400).send('Task delete error');
+    res.status(400).send('Task deletion error');
   }
 };
 
@@ -51,9 +53,9 @@ const changeTextTask = async (req, res) => {
     if (!req.params.hasOwnProperty('_id')
       || !req.body.hasOwnProperty('text')
       || !validationString(text)
-      || id === ''
+      || _id === ''
     ) {
-      throw new Error("Values were not added");
+      throw new Error("Values have not been added");
     }
     const task = await Task.findOneAndUpdate(
       { _id },
@@ -69,9 +71,9 @@ const changeTextTask = async (req, res) => {
 const deleteTasks = async (req, res) => {
   try {
     await Task.deleteMany();
-    res.status(200).send("All Tasks deleted !");
+    res.status(200).send("All tasks have been deleted");
   } catch (error) {
-    res.status(400).send('Tasks delete error');
+    res.status(400).send('Tasks have been deleted');
   }
 };
 
@@ -80,12 +82,12 @@ const changeCheckBoxTask = async (req, res) => {
     const { isCheck } = req.body;
     const { _id } = req.params;
 
-    if (!req.body.hasOwnProperty('isCheck'
-      || !req.params.hasOwnProperty('_id'))
+    if (!req.body.hasOwnProperty('isCheck')
+      || !req.params.hasOwnProperty('_id')
       || typeof isCheck !== 'boolean'
       || _id === ''
     ) {
-      throw new Error("Values were not added");
+      throw new Error("Values have not been added");
     }
     const task = await Task.findOneAndUpdate(
       { _id },
