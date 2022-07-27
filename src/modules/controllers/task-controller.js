@@ -3,7 +3,7 @@ const { validationString } = require('../../helpers/validation');
 
 const getAllTasks = async (req, res) => {
   try {
-    const allTasks = await Task.find().sort({isCheck: 1});
+    const allTasks = await Task.find().sort({ isCheck: 1 });
     res.status(200).send({ data: allTasks });
   } catch (error) {
     res.status(400).send("Task retrieval error");
@@ -49,9 +49,9 @@ const changeTextTask = async (req, res) => {
     const { _id } = req.params;
 
     if (!req.params.hasOwnProperty('_id')
+      || _id === ''
       || !req.body.hasOwnProperty('text')
       || !validationString(text)
-      || _id === ''
     ) {
       throw new Error("Values have not been added");
     }
@@ -68,7 +68,7 @@ const changeTextTask = async (req, res) => {
 
 const deleteTasks = async (req, res) => {
   try {
-    await Task.deleteMany();
+    await Task.deleteMany({});
     res.status(200).send("All tasks have been deleted");
   } catch (error) {
     res.status(400).send('Tasks have been deleted');
@@ -80,10 +80,10 @@ const changeCheckBoxTask = async (req, res) => {
     const { isCheck } = req.body;
     const { _id } = req.params;
 
-    if (!req.body.hasOwnProperty('isCheck')
-      || !req.params.hasOwnProperty('_id')
-      || typeof isCheck !== 'boolean'
+    if (!req.params.hasOwnProperty('_id')
       || _id === ''
+      || !req.body.hasOwnProperty('isCheck')
+      || typeof isCheck !== 'boolean'
     ) {
       throw new Error("Values have not been added");
     }
