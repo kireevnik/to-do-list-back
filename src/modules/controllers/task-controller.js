@@ -17,7 +17,7 @@ const createNewTask = async (req, res) => {
     if (!req.body.hasOwnProperty('text')
       || !validationString(text)
     ) {
-      throw new Error("Value not received");
+      throw new Error();
     }
     const newTask = new Task({ text });
     const savingNewTask = await newTask.save();
@@ -34,7 +34,7 @@ const deleteTask = async (req, res) => {
     if (!req.params.hasOwnProperty('_id')
       || _id === ''
     ) {
-      throw new Error("Values have not been added")
+      throw new Error();
     }
     const data = await Task.deleteOne({ _id });
     res.status(200).send(data);
@@ -53,7 +53,7 @@ const changeTextTask = async (req, res) => {
       || !req.body.hasOwnProperty('text')
       || !validationString(text)
     ) {
-      throw new Error("Values have not been added");
+      throw new Error();
     }
     const task = await Task.findOneAndUpdate(
       { _id },
@@ -85,7 +85,7 @@ const changeCheckBoxTask = async (req, res) => {
       || !req.body.hasOwnProperty('isCheck')
       || typeof isCheck !== 'boolean'
     ) {
-      throw new Error("Values have not been added");
+      throw new Error();
     }
     const task = await Task.findOneAndUpdate(
       { _id },
